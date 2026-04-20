@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>생애주기별 경제생활 분석 학습지</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  /* ── 헤더 ── */
+  .top-bar {
+    background: #0a2342;
+    color: #fff;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .top-bar-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 12px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .top-bar-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #a8c4e0;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+  .top-bar-inputs {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  .top-bar input {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 13px;
+    padding: 6px 10px;
+    outline: none;
+    min-width: 100px;
+    flex: 1;
+  }
+  .top-bar input::placeholder { color: rgba(255,255,255,0.45); }
+  .top-bar input:focus { border-color: #4da6ff; background: rgba(255,255,255,0.18); }
+  .btn-save {
+    background: #1a6abf;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .btn-save:hover { background: #1580e0; }
+
+  /* ── 메인 ── */
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+
+  /* ── 문서 헤더 ── */
+  .doc-header {
+    background: #0a2342;
+    color: #fff;
+    border-radius: 6px 6px 0 0;
+    padding: 24px 28px 20px;
+    margin-bottom: 0;
+  }
+  .doc-header .kdi-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: #7aafda;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .doc-header h1 {
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .doc-header .subtitle {
+    font-size: 13px;
+    color: #a8c4e0;
+    margin-bottom: 14px;
+  }
+  .doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 12px;
+    font-size: 12px;
+    color: #7aafda;
+  }
+  .doc-meta span strong { color: #fff; }
+
+  /* ── 카드 ── */
+  .card {
+    background: #fff;
+    border: 1px solid #dce3ea;
+    border-radius: 0;
+    padding: 22px 24px;
+    margin-bottom: 0;
+    border-top: none;
+  }
+  .card:last-child { border-radius: 0 0 6px 6px; }
+  .card + .card { border-top: none; }
+  .card-divider {
+    height: 6px;
+    background: #f0f2f5;
+    border-left: 1px solid #dce3ea;
+    border-right: 1px solid #dce3ea;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #1a6abf;
+    margin-bottom: 4px;
+  }
+  .section-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0a2342;
+    margin-bottom: 4px;
+  }
+  .section-desc {
+    font-size: 13px;
+    color: #556;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── 성취기준 박스 ── */
+  .achievement-box {
+    background: #eef4fb;
+    border-left: 4px solid #1a6abf;
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #0a2342;
+    margin-bottom: 16px;
+    line-height: 1.7;
+  }
+  .achievement-box .code { font-weight: 700; color: #1a6abf; }
+
+  /* ── 인터뷰 카드 ── */
+  .interview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .interview-card {
+    border: 1.5px solid #dce3ea;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+  .interview-card:hover { border-color: #1a6abf; box-shadow: 0 2px 8px rgba(26,106,191,0.15); }
+  .interview-card.selected { border-color: #1a6abf; box-shadow: 0 0 0 2px rgba(26,106,191,0.2); }
+  .interview-card-header {
+    padding: 10px 12px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stage-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+  .badge-youth { background: #e8f5e9; color: #2e7d32; }
+  .badge-young { background: #e3f2fd; color: #1565c0; }
+  .badge-mid { background: #fff3e0; color: #e65100; }
+  .badge-old { background: #f3e5f5; color: #6a1b9a; }
+  .interview-card-header .name { font-size: 13px; font-weight: 700; color: #0a2342; }
+  .interview-card-body {
+    padding: 0 12px 12px;
+    font-size: 12px;
+    color: #445;
+    line-height: 1.65;
+    display: none;
+  }
+  .interview-card.selected .interview-card-body { display: block; }
+  .interview-card .select-hint {
+    font-size: 11px;
+    color: #1a6abf;
+    padding: 0 12px 8px;
+  }
+  .interview-card.selected .select-hint { display: none; }
+  .random-btn {
+    background: #0a2342;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: background 0.15s;
+  }
+  .random-btn:hover { background: #1a6abf; }
+
+  /* ── 분석 테이블 ── */
+  .analysis-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .analysis-table th {
+    background: #0a2342;
+    color: #a8c4e0;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 9px 12px;
+    text-align: left;
+    border: 1px solid #1a3a5e;
+  }
+  .analysis-table td {
+    border: 1px solid #dce3ea;
+    padding: 8px 10px;
+    vertical-align: top;
+  }
+  .analysis-table tr:nth-child(even) td { background: #f8fafc; }
+  .analysis-table textarea {
+    width: 100%;
+    border: none;
+    background: transparent;
+    resize: vertical;
+    font-size: 12px;
+    font-family: inherit;
+    color: #1a1a2e;
+    min-height: 52px;
+    outline: none;
+    line-height: 1.5;
+  }
+  .analysis-table input[type="number"] {
+    width: 52px;
+    border: 1px solid #ccd;
+    border-radius: 3px;
+    padding: 3px 6px;
+    font-size: 12px;
+    text-align: center;
+    color: #0a2342;
+    background: #fff;
+  }
+  .scale-hint {
+    font-size: 11px;
+    color: #889;
+    margin-top: 2px;
+  }
+
+  /* ── 척도 슬라이더 ── */
+  .scale-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+  }
+  .scale-label { font-size: 11px; color: #556; min-width: 28px; font-weight: 700; }
+  .scale-row input[type="range"] {
+    flex: 1;
+    accent-color: #1a6abf;
+    height: 4px;
+    cursor: pointer;
+  }
+  .scale-val {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a6abf;
+    min-width: 22px;
+    text-align: right;
+  }
+
+  /* ── 그래프 ── */
+  .graph-wrapper {
+    background: #fff;
+    border: 1px solid #dce3ea;
+    border-radius: 6px;
+    padding: 20px;
+    margin: 12px 0;
+    position: relative;
+  }
+  .graph-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .graph-title { font-size: 14px; font-weight: 800; color: #0a2342; }
+  .btn-graph-save {
+    background: #eef4fb;
+    color: #1a6abf;
+    border: 1px solid #b3cde8;
+    border-radius: 4px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .btn-graph-save:hover { background: #d0e6f8; }
+  canvas.graph-canvas {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    border-radius: 4px;
+  }
+  .graph-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .gc-box {
+    background: #f8fafc;
+    border: 1px solid #dce3ea;
+    border-radius: 5px;
+    padding: 10px 12px;
+  }
+  .gc-box .gc-stage {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0a2342;
+    margin-bottom: 6px;
+  }
+
+  /* ── 모둠 활동 반영란 ── */
+  .reflection-textarea {
+    width: 100%;
+    border: 1px solid #ccd;
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #1a1a2e;
+    resize: vertical;
+    min-height: 80px;
+    background: #fafbfc;
+    outline: none;
+    line-height: 1.6;
+  }
+  .reflection-textarea:focus { border-color: #1a6abf; }
+
+  /* ── 통계자료 섹션 ── */
+  .stat-box {
+    background: #fffbf0;
+    border: 1px solid #f0d080;
+    border-left: 4px solid #e6a800;
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    font-size: 12.5px;
+    color: #443300;
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .stat-box strong { color: #8a5200; }
+
+  /* ── 구분 레이블 ── */
+  .activity-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+  .badge-individual { background: #0a2342; color: #a8c4e0; }
+  .badge-group { background: #1a6abf; color: #fff; }
+  .badge-stat { background: #e6a800; color: #3a2200; }
+
+  /* ── 인터뷰 풀 패널 ── */
+  .interview-full {
+    display: none;
+    background: #f8fafc;
+    border: 1.5px solid #1a6abf;
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 10px 0 14px;
+    font-size: 13px;
+    line-height: 1.75;
+    color: #1a1a2e;
+    position: relative;
+  }
+  .interview-full .if-close {
+    position: absolute;
+    top: 8px; right: 10px;
+    background: none; border: none;
+    font-size: 16px; cursor: pointer; color: #889;
+  }
+  .interview-full .if-stage {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .interview-full .if-quote {
+    border-left: 3px solid #1a6abf;
+    padding-left: 12px;
+    font-style: italic;
+    color: #1a1a2e;
+  }
+
+  /* ── 범례 ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    margin-top: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  @media (max-width: 600px) {
+    .doc-header { padding: 16px 14px 14px; }
+    .doc-header h1 { font-size: 17px; }
+    .card { padding: 14px 12px; }
+    .analysis-table { font-size: 11px; }
+  }
+
+  /* ── 인쇄/저장 시 ── */
+  .no-print { }
+</style>
+</head>
+<body>
+
+<!-- 상단 고정 저장 바 -->
+<div class="top-bar no-print">
+  <div class="top-bar-inner">
+    <span class="top-bar-title">📋 활동지 저장</span>
+    <div class="top-bar-inputs">
+      <input type="text" id="classInput" placeholder="학년-반 (예: 2-3)" maxlength="10">
+      <input type="text" id="groupInput" placeholder="모둠명 (예: 1모둠)" maxlength="20">
+    </div>
+    <button class="btn-save" onclick="saveWorksheet()">🖼 나의 활동지 이미지로 저장하기</button>
+  </div>
+</div>
+
+<!-- 메인 학습지 -->
+<div class="page" id="worksheet">
+
+  <!-- 문서 헤더 -->
+  <div class="doc-header">
+    <div class="kdi-label">SOCIAL STUDIES · 사회 탐구 학습지</div>
+    <h1>생애주기별 경제생활 분석<br><span style="font-size:16px;font-weight:400;color:#a8c4e0;">소득과 소비의 변화를 추적한다</span></h1>
+    <div class="subtitle">시민 인터뷰를 통한 경향성 발견 · 통계자료 교차 검토</div>
+    <div class="doc-meta">
+      <span><strong>성취기준</strong> 9사(일사)08-02</span>
+      <span><strong>활동 유형</strong> 발견학습 · 탐구학습</span>
+      <span><strong>학반/모둠</strong> <span id="headerClass">__학년 __반</span> · <span id="headerGroup">__ 모둠</span></span>
+    </div>
+  </div>
+
+  <!-- 성취기준 -->
+  <div class="card">
+    <div class="achievement-box">
+      <span class="code">[9사(일사)08-02]</span>&nbsp; 일생 동안 이루어지는 경제생활을 분석하고, 안정적인 금융 생활을 위한 자산 및 신용 관리 방안을 계획한다.
+    </div>
+    <div style="font-size:13px;color:#556;line-height:1.7;">
+      오늘 우리는 <strong>탐구자</strong>가 되어 시민들의 생생한 인터뷰를 분석합니다. 각 생애주기 단계에서 소득과 소비가 어떻게 달라지는지 스스로 <strong>경향성을 발견</strong>해 보세요.
+    </div>
+  </div>
+
+  <div class="card-divider"></div>
+
+  <!-- ① 개별학습 -->
+  <div class="card">
+    <span class="activity-badge badge-individual">개별 학습</span>
+
+    <div class="section-label">ACTIVITY 1</div>
+    <div class="section-title">시민 인터뷰 읽기 &amp; 경향성 발견</div>
+    <div class="section-desc">아래 4개의 인터뷰 카드 중 <strong>하나를 선택</strong>하거나 <strong>[랜덤 선택]</strong> 버튼을 눌러보세요. 선택한 인터뷰를 꼼꼼히 읽고 아래 분석표를 작성합니다.</div>
+
+    <button class="random-btn" onclick="selectRandom()">🎲 랜덤으로 인터뷰 선택하기</button>
+
+    <!-- 인터뷰 카드들 -->
+    <div class="interview-grid">
+      <div class="interview-card" id="card-0" onclick="selectInterview(0)">
+        <div class="interview-card-header">
+          <span class="stage-badge badge-youth">유소년기</span>
+          <span class="name">중학생 (10대)</span>
+        </div>
+        <div class="select-hint">▶ 클릭하여 인터뷰 보기</div>
+        <div class="interview-card-body">
+          "저는 중학교 2학년이에요. 아직 돈을 벌 수 없어서 전적으로 부모님이 주시는 용돈에 의존해서 생활하고 있어요. 친구들이랑 떡볶이도 사 먹고 싶고 좋아하는 연예인 굿즈도 사고 싶지만, 한 달 용돈이 정해져 있잖아요. 그래서 용돈 기입장을 쓰면서 충동구매를 줄이고, 나중에 어른이 되어서도 도움이 될 바람직한 소비 습관을 기르려고 노력 중이에요."
+        </div>
+      </div>
+      <div class="interview-card" id="card-1" onclick="selectInterview(1)">
+        <div class="interview-card-header">
+          <span class="stage-badge badge-young">청년기</span>
+          <span class="name">사회초년생 (20대)</span>
+        </div>
+        <div class="select-hint">▶ 클릭하여 인터뷰 보기</div>
+        <div class="interview-card-body">
+          "작년에 처음 취업(고용)에 성공해서 드디어 제 힘으로 월급이라는 소득을 얻기 시작했어요! 내 손으로 돈을 번다는 게 참 뿌듯하더라고요. 하지만 막상 대학 다닐 때 빌린 학업 대출금도 갚아야 하고, 앞으로 몇 년 뒤에 있을 결혼이나 전세금 마련을 생각하면 돈 들어갈 곳이 산더미예요. 그래서 월급이 들어오면 무조건 적금부터 넣고 있습니다."
+        </div>
+      </div>
+      <div class="interview-card" id="card-2" onclick="selectInterview(2)">
+        <div class="interview-card-header">
+          <span class="stage-badge badge-mid">중·장년기</span>
+          <span class="name">직장인 (40대)</span>
+        </div>
+        <div class="select-hint">▶ 클릭하여 인터뷰 보기</div>
+        <div class="interview-card-body">
+          "회사에서 차장으로 일하고 있어서 지금이 살면서 소득이 가장 많은 시기인 것 같아요. 쓰는 돈보다 버는 돈이 더 많아서(소득 > 소비), 남는 여유 자금을 주식이나 펀드로 굴리는 금융 생활에도 관심이 아주 많습니다. 다만, 무리해서 산 아파트 대출금(주택 구입)을 갚고 두 아이의 영어, 수학 학원비(자녀 양육)로 나가는 돈도 만만치 않아서 지출 규모 자체가 엄청나게 큰 시기이기도 하네요."
+        </div>
+      </div>
+      <div class="interview-card" id="card-3" onclick="selectInterview(3)">
+        <div class="interview-card-header">
+          <span class="stage-badge badge-old">노년기</span>
+          <span class="name">은퇴자 (70대)</span>
+        </div>
+        <div class="select-hint">▶ 클릭하여 인터뷰 보기</div>
+        <div class="interview-card-body">
+          "수십 년 다니던 직장에서 은퇴를 하고 나니 매달 꼬박꼬박 들어오던 소득이 뚝 끊겨서 걱정이 큽니다. 수입은 연금 조금 나오는 게 전부인데, 나이가 드니 무릎 수술이나 혈압약 등 병원비로 나가는 지출은 계속 생기네요. 요즘은 기대 수명도 길어져서 100세 시대라는데, 젊었을 때 쓸 돈을 조금 더 아껴서 안정적으로 노후 준비를 탄탄하게 해둘 걸 후회할 때가 있습니다."
+        </div>
+      </div>
+    </div>
+
+    <!-- 선택된 인터뷰 전체 보기 패널 -->
+    <div class="interview-full" id="interviewFull">
+      <button class="if-close" onclick="closeInterview()">✕</button>
+      <div class="if-stage" id="ifStage"></div>
+      <div class="if-quote" id="ifQuote"></div>
+    </div>
+
+    <!-- 분석 표 -->
+    <div style="font-size:13px;font-weight:700;color:#0a2342;margin:16px 0 8px;">📝 선택한 인터뷰를 분석하여 아래 표를 작성하세요</div>
+    <table class="analysis-table">
+      <thead>
+        <tr>
+          <th style="width:90px;">생애주기</th>
+          <th>소득 특징</th>
+          <th>소비 특징</th>
+          <th style="width:130px;">소득/소비 크기<br><span style="font-weight:400;font-size:10px;">(1–15 척도)</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#2e7d32;">유소년기</strong><br><span style="font-size:11px;color:#889;">~10대</span></td>
+          <td><textarea placeholder="예) 독자적인 소득 없음, 부모님 용돈에 의존..." id="inc0"></textarea></td>
+          <td><textarea placeholder="예) 식비, 여가, 취미 등 소소한 소비 중심..." id="con0"></textarea></td>
+          <td>
+            <div class="scale-row"><span class="scale-label">소득</span><input type="range" min="1" max="15" value="2" id="si0" oninput="updateScale('si0','sv0')"><span class="scale-val" id="sv0">2</span></div>
+            <div class="scale-row"><span class="scale-label">소비</span><input type="range" min="1" max="15" value="3" id="sc0" oninput="updateScale('sc0','sv0c')"><span class="scale-val" id="sv0c">3</span></div>
+          </td>
+        </tr>
+        <tr>
+          <td><strong style="color:#1565c0;">청년기</strong><br><span style="font-size:11px;color:#889;">20~30대</span></td>
+          <td><textarea placeholder="예) 취업으로 처음 소득 발생, 상대적으로 낮은 임금..." id="inc1"></textarea></td>
+          <td><textarea placeholder="예) 대출 상환, 결혼 자금, 주거비 등 큰 지출 시작..." id="con1"></textarea></td>
+          <td>
+            <div class="scale-row"><span class="scale-label">소득</span><input type="range" min="1" max="15" value="7" id="si1" oninput="updateScale('si1','sv1')"><span class="scale-val" id="sv1">7</span></div>
+            <div class="scale-row"><span class="scale-label">소비</span><input type="range" min="1" max="15" value="8" id="sc1" oninput="updateScale('sc1','sv1c')"><span class="scale-val" id="sv1c">8</span></div>
+          </td>
+        </tr>
+        <tr>
+          <td><strong style="color:#e65100;">중·장년기</strong><br><span style="font-size:11px;color:#889;">40~50대</span></td>
+          <td><textarea placeholder="예) 소득이 최고조에 달하는 시기, 여유 자금 투자 가능..." id="inc2"></textarea></td>
+          <td><textarea placeholder="예) 주택 대출, 자녀 교육비 등 지출 규모도 최대..." id="con2"></textarea></td>
+          <td>
+            <div class="scale-row"><span class="scale-label">소득</span><input type="range" min="1" max="15" value="13" id="si2" oninput="updateScale('si2','sv2')"><span class="scale-val" id="sv2">13</span></div>
+            <div class="scale-row"><span class="scale-label">소비</span><input type="range" min="1" max="15" value="11" id="sc2" oninput="updateScale('sc2','sv2c')"><span class="scale-val" id="sv2c">11</span></div>
+          </td>
+        </tr>
+        <tr>
+          <td><strong style="color:#6a1b9a;">노년기</strong><br><span style="font-size:11px;color:#889;">60대 이후</span></td>
+          <td><textarea placeholder="예) 은퇴 후 소득 급감, 연금만 남는 경우 많음..." id="inc3"></textarea></td>
+          <td><textarea placeholder="예) 의료비 증가, 생활비는 유지되지만 소득보다 클 수 있음..." id="con3"></textarea></td>
+          <td>
+            <div class="scale-row"><span class="scale-label">소득</span><input type="range" min="1" max="15" value="3" id="si3" oninput="updateScale('si3','sv3')"><span class="scale-val" id="sv3">3</span></div>
+            <div class="scale-row"><span class="scale-label">소비</span><input type="range" min="1" max="15" value="5" id="sc3" oninput="updateScale('sc3','sv3c')"><span class="scale-val" id="sv3c">5</span></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-divider"></div>
+
+  <!-- ② 모둠학습 – 발견 그래프 -->
+  <div class="card">
+    <span class="activity-badge badge-group">모둠 학습</span>
+
+    <div class="section-label">ACTIVITY 2</div>
+    <div class="section-title">전체 생애주기 경제생활 그래프로 표현하기</div>
+    <div class="section-desc">개별 학습 결과를 모둠이 함께 논의하여 소득·소비 값을 결정하고, 아래 슬라이더로 조정하면 곡선 그래프가 자동으로 그려집니다.</div>
+
+    <div class="graph-wrapper" id="graphWrapper1">
+      <div class="graph-title-row">
+        <span class="graph-title">생애주기별 소득·소비 곡선 <span style="font-size:11px;color:#889;">(발견)</span></span>
+        <button class="btn-graph-save" onclick="saveGraph('graphWrapper1','생애주기그래프(발견)')">💾 그래프만 저장</button>
+      </div>
+      <canvas class="graph-canvas" id="graph1" width="640" height="320"></canvas>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#1a6abf;"></div><span>소득</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e65100;"></div><span>소비</span></div>
+      </div>
+      <div class="graph-controls" id="graphControls1">
+        <!-- js로 생성 -->
+      </div>
+    </div>
+
+    <div style="margin-top:14px;">
+      <div style="font-size:13px;font-weight:700;color:#0a2342;margin-bottom:6px;">💬 모둠 토의 내용 &amp; 발견한 경향성</div>
+      <textarea class="reflection-textarea" placeholder="예) 유소년기에는 소득이 거의 없다가 청년기부터 소득이 시작되고, 중·장년기에 소득이 최고조에 달하다가 노년기에 다시 감소하는 역U자 곡선이 나타났다. 소비는 전 생애에 걸쳐 비교적 일정하게 유지되나..." id="discussion1"></textarea>
+    </div>
+  </div>
+
+  <div class="card-divider"></div>
+
+  <!-- ③ 통계자료 검토 그래프 -->
+  <div class="card">
+    <span class="activity-badge badge-stat">통계자료 검토</span>
+
+    <div class="section-label">ACTIVITY 3</div>
+    <div class="section-title">통계자료와 비교하여 그래프 다시 그리기</div>
+    <div class="section-desc">선생님이 제시한 통계자료를 보고, 앞서 작성한 그래프와 비교하여 수정해 보세요.</div>
+
+    <div class="stat-box">
+      <strong>📊 참고: 실제 통계 경향</strong><br>
+      통계청·한국은행 자료에 따르면, 우리나라 가구의 소득은 <strong>40~50대에 최고조</strong>를 이루고 이후 감소합니다. 소비는 자녀 양육이 집중되는 <strong>30~50대에 가장 높으며</strong>, 노년기에도 의료비 증가로 소비가 완전히 줄지 않는 경향이 있습니다. 유소년기와 노년기에는 소비가 소득을 초과하는 <strong>"적자 구간"</strong>이 발생합니다.
+      <br><span style="font-size:11px;color:#8a6200;margin-top:4px;display:block;">※ 선생님이 별도로 제공하는 통계 그래프 자료를 참고하여 아래 수치를 수정하세요.</span>
+    </div>
+
+    <div class="graph-wrapper" id="graphWrapper2">
+      <div class="graph-title-row">
+        <span class="graph-title">생애주기별 소득·소비 곡선 <span style="font-size:11px;color:#889;">(검토 후 수정)</span></span>
+        <button class="btn-graph-save" onclick="saveGraph('graphWrapper2','생애주기그래프(검토)')">💾 그래프만 저장</button>
+      </div>
+      <canvas class="graph-canvas" id="graph2" width="640" height="320"></canvas>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#1a6abf;"></div><span>소득</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e65100;"></div><span>소비</span></div>
+      </div>
+      <div class="graph-controls" id="graphControls2">
+      </div>
+    </div>
+
+    <div style="margin-top:14px;">
+      <div style="font-size:13px;font-weight:700;color:#0a2342;margin-bottom:6px;">✏️ 수정 전과 비교했을 때 어떤 점이 바뀌었나요?</div>
+      <textarea class="reflection-textarea" placeholder="예) 처음에는 청년기 소비를 낮게 잡았는데 통계자료를 보니 대출 상환과 결혼 준비 등으로 소비가 생각보다 높았다. 또한 노년기에도 의료비 등으로 소비가 꽤 높게 유지된다는 점이 달랐다..." id="discussion2" style="min-height:100px;"></textarea>
+    </div>
+  </div>
+
+  <div style="text-align:center;color:#aab;font-size:11px;margin-top:20px;padding:10px;">
+    생애주기별 경제생활 탐구 학습지 · 사회(일반사회) · [9사(일사)08-02]
+  </div>
+</div>
+
+<script>
+const STAGES = ['유소년기\n(~10대)', '청년기\n(20~30대)', '중·장년기\n(40~50대)', '노년기\n(60대~)'];
+const STAGE_SHORT = ['유소년기','청년기','중·장년기','노년기'];
+
+// ── 헤더 업데이트 ──
+document.getElementById('classInput').addEventListener('input', function() {
+  document.getElementById('headerClass').textContent = this.value || '__학년 __반';
+});
+document.getElementById('groupInput').addEventListener('input', function() {
+  document.getElementById('headerGroup').textContent = this.value || '__ 모둠';
+});
+
+// ── 척도 슬라이더 연동 ──
+function updateScale(sliderId, valId) {
+  document.getElementById(valId).textContent = document.getElementById(sliderId).value;
+  syncGraphFromSliders();
+}
+
+// ── 인터뷰 선택 ──
+let selectedInterview = null;
+const interviews = [
+  { stage: '유소년기 (10대 중학생)', text: '저는 중학교 2학년이에요. 아직 돈을 벌 수 없어서 전적으로 부모님이 주시는 용돈에 의존해서 생활하고 있어요. 친구들이랑 떡볶이도 사 먹고 싶고 좋아하는 연예인 굿즈도 사고 싶지만, 한 달 용돈이 정해져 있잖아요. 그래서 용돈 기입장을 쓰면서 충동구매를 줄이고, 나중에 어른이 되어서도 도움이 될 바람직한 소비 습관을 기르려고 노력 중이에요.' },
+  { stage: '청년기 (20대 사회초년생)', text: '작년에 처음 취업(고용)에 성공해서 드디어 제 힘으로 월급이라는 소득을 얻기 시작했어요! 내 손으로 돈을 번다는 게 참 뿌듯하더라고요. 하지만 막상 대학 다닐 때 빌린 학업 대출금도 갚아야 하고, 앞으로 몇 년 뒤에 있을 결혼이나 전세금 마련을 생각하면 돈 들어갈 곳이 산더미예요. 그래서 월급이 들어오면 무조건 적금부터 넣고 있습니다.' },
+  { stage: '중·장년기 (40대 직장인)', text: '회사에서 차장으로 일하고 있어서 지금이 살면서 소득이 가장 많은 시기인 것 같아요. 쓰는 돈보다 버는 돈이 더 많아서(소득 > 소비), 남는 여유 자금을 주식이나 펀드로 굴리는 금융 생활에도 관심이 아주 많습니다. 다만, 무리해서 산 아파트 대출금(주택 구입)을 갚고 두 아이의 영어, 수학 학원비(자녀 양육)로 나가는 돈도 만만치 않아서 지출 규모 자체가 엄청나게 큰 시기이기도 하네요.' },
+  { stage: '노년기 (70대 은퇴자)', text: '수십 년 다니던 직장에서 은퇴를 하고 나니 매달 꼬박꼬박 들어오던 소득이 뚝 끊겨서 걱정이 큽니다. 수입은 연금 조금 나오는 게 전부인데, 나이가 드니 무릎 수술이나 혈압약 등 병원비로 나가는 지출은 계속 생기네요. 요즘은 기대 수명도 길어져서 100세 시대라는데, 젊었을 때 쓸 돈을 조금 더 아껴서 안정적으로 노후 준비를 탄탄하게 해둘 걸 후회할 때가 있습니다.' }
+];
+
+function selectInterview(idx) {
+  document.querySelectorAll('.interview-card').forEach((c,i) => {
+    c.classList.toggle('selected', i === idx);
+  });
+  const full = document.getElementById('interviewFull');
+  document.getElementById('ifStage').textContent = interviews[idx].stage;
+  document.getElementById('ifQuote').textContent = interviews[idx].text;
+  full.style.display = 'block';
+  selectedInterview = idx;
+}
+function closeInterview() {
+  document.getElementById('interviewFull').style.display = 'none';
+}
+function selectRandom() {
+  const idx = Math.floor(Math.random() * 4);
+  selectInterview(idx);
+  document.querySelectorAll('.interview-card')[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── 그래프 데이터 ──
+const graphData = {
+  g1: { inc: [2,7,13,3], con: [3,8,11,5] },
+  g2: { inc: [2,7,13,3], con: [3,8,11,5] }
+};
+
+// ── 그래프 컨트롤 생성 ──
+function buildControls(graphKey, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  STAGE_SHORT.forEach((s, i) => {
+    const inc = graphData[graphKey].inc[i];
+    const con = graphData[graphKey].con[i];
+    const box = document.createElement('div');
+    box.className = 'gc-box';
+    box.innerHTML = `
+      <div class="gc-stage">${s}</div>
+      <div class="scale-row">
+        <span class="scale-label" style="color:#1a6abf;">소득</span>
+        <input type="range" min="1" max="15" value="${inc}" step="1"
+          oninput="updateGraph('${graphKey}','inc',${i},this.value,this.nextElementSibling)"
+          style="flex:1;accent-color:#1a6abf;">
+        <span class="scale-val" style="color:#1a6abf;">${inc}</span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-label" style="color:#e65100;">소비</span>
+        <input type="range" min="1" max="15" value="${con}" step="1"
+          oninput="updateGraph('${graphKey}','con',${i},this.value,this.nextElementSibling)"
+          style="flex:1;accent-color:#e65100;">
+        <span class="scale-val" style="color:#e65100;">${con}</span>
+      </div>`;
+    container.appendChild(box);
+  });
+}
+
+function updateGraph(graphKey, type, idx, val, valEl) {
+  val = parseInt(val);
+  graphData[graphKey][type][idx] = val;
+  valEl.textContent = val;
+  drawGraph(graphKey === 'g1' ? 'graph1' : 'graph2', graphData[graphKey].inc, graphData[graphKey].con);
+}
+
+// ── 개별학습 슬라이더 → 그래프1 자동 반영 ──
+function syncGraphFromSliders() {
+  const inc = [0,1,2,3].map(i => parseInt(document.getElementById('si'+i).value));
+  const con = [0,1,2,3].map(i => parseInt(document.getElementById('sc'+i).value));
+  graphData.g1.inc = inc; graphData.g1.con = con;
+  // 그래프 컨트롤 슬라이더도 업데이트
+  buildControls('g1', 'graphControls1');
+  drawGraph('graph1', inc, con);
+}
+
+// ── 카탈스롬 스플라인 보간 ──
+function catmullRomSpline(pts, numPoints) {
+  if (pts.length < 2) return pts;
+  const result = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(i-1, 0)];
+    const p1 = pts[i];
+    const p2 = pts[i+1];
+    const p3 = pts[Math.min(i+2, pts.length-1)];
+    for (let t = 0; t <= 1; t += 1/numPoints) {
+      const t2 = t*t, t3 = t2*t;
+      const x = 0.5*((2*p1.x)+(-p0.x+p2.x)*t+(2*p0.x-5*p1.x+4*p2.x-p3.x)*t2+(-p0.x+3*p1.x-3*p2.x+p3.x)*t3);
+      const y = 0.5*((2*p1.y)+(-p0.y+p2.y)*t+(2*p0.y-5*p1.y+4*p2.y-p3.y)*t2+(-p0.y+3*p1.y-3*p2.y+p3.y)*t3);
+      result.push({x, y});
+    }
+  }
+  result.push(pts[pts.length-1]);
+  return result;
+}
+
+function drawGraph(canvasId, incVals, conVals) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const PAD = { top: 28, right: 24, bottom: 52, left: 44 };
+  const gW = W - PAD.left - PAD.right;
+  const gH = H - PAD.top - PAD.bottom;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // 배경
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(PAD.left, PAD.top, gW, gH);
+
+  // 그리드
+  ctx.strokeStyle = '#e4e8ed';
+  ctx.lineWidth = 0.8;
+  for (let v = 0; v <= 15; v += 3) {
+    const y = PAD.top + gH - (v/15)*gH;
+    ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left+gW, y); ctx.stroke();
+    ctx.fillStyle = '#8899aa'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText(v, PAD.left-5, y+3.5);
+  }
+
+  // X축 레이블
+  const xLabels = ['유소년기\n(~10대)', '청년기\n(20~30대)', '중·장년기\n(40~50대)', '노년기\n(60대~)'];
+  const xs = xLabels.map((_, i) => PAD.left + (i/(xLabels.length-1))*gW);
+  ctx.fillStyle = '#445566'; ctx.textAlign = 'center'; ctx.font = 'bold 10px sans-serif';
+  xLabels.forEach((lbl, i) => {
+    const lines = lbl.split('\n');
+    lines.forEach((line, li) => {
+      ctx.fillText(line, xs[i], PAD.top + gH + 16 + li*13);
+    });
+    // 수직 점선
+    ctx.strokeStyle = '#dde3ea'; ctx.lineWidth = 0.8; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(xs[i], PAD.top); ctx.lineTo(xs[i], PAD.top+gH); ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // 축
+  ctx.strokeStyle = '#1a2a3a'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(PAD.left, PAD.top); ctx.lineTo(PAD.left, PAD.top+gH); ctx.lineTo(PAD.left+gW, PAD.top+gH); ctx.stroke();
+
+  // Y축 레이블
+  ctx.save(); ctx.translate(12, PAD.top + gH/2); ctx.rotate(-Math.PI/2);
+  ctx.fillStyle = '#556677'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('소득·소비 규모 (1~15점)', 0, 0); ctx.restore();
+
+  function toPoint(i, val) {
+    return { x: xs[i], y: PAD.top + gH - (val/15)*gH };
+  }
+
+  function drawCurve(vals, color) {
+    const rawPts = vals.map((v,i) => toPoint(i, v));
+    const splinePts = catmullRomSpline(rawPts, 30);
+
+    // 면적
+    ctx.beginPath();
+    ctx.moveTo(splinePts[0].x, PAD.top + gH);
+    splinePts.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.lineTo(splinePts[splinePts.length-1].x, PAD.top + gH);
+    ctx.closePath();
+    ctx.fillStyle = color + '18';
+    ctx.fill();
+
+    // 선
+    ctx.beginPath();
+    ctx.moveTo(splinePts[0].x, splinePts[0].y);
+    splinePts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.stroke();
+
+    // 점 + 값
+    rawPts.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
+      ctx.fillStyle = '#fff'; ctx.fill();
+      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+    });
+    vals.forEach((v, i) => {
+      const p = rawPts[i];
+      ctx.fillStyle = color; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(v, p.x, p.y - 9);
+    });
+  }
+
+  drawCurve(conVals, '#e65100');
+  drawCurve(incVals, '#1a6abf');
+
+  // 제목
+  ctx.fillStyle = '#0a2342'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('소득 (파란선) / 소비 (주황선)', PAD.left + 4, PAD.top - 8);
+}
+
+// ── 그래프 저장 ──
+function saveGraph(wrapperId, prefix) {
+  const cls = document.getElementById('classInput').value.trim() || '학년-반';
+  const grp = document.getElementById('groupInput').value.trim() || '모둠';
+  const filename = `${prefix}_${cls}_${grp}.png`;
+  const wrapper = document.getElementById(wrapperId);
+  html2canvas(wrapper, { scale: 2, backgroundColor: '#fff', useCORS: true }).then(canvas => {
+    const a = document.createElement('a');
+    a.download = filename;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  });
+}
+
+// ── 전체 활동지 저장 ──
+function saveWorksheet() {
+  const cls = document.getElementById('classInput').value.trim() || '학년-반';
+  const grp = document.getElementById('groupInput').value.trim() || '모둠';
+  const filename = `생애주기_${cls}_${grp}.png`;
+  const topBar = document.querySelector('.top-bar');
+  topBar.style.position = 'static';
+  html2canvas(document.getElementById('worksheet'), {
+    scale: 1.5, backgroundColor: '#f0f2f5', useCORS: true,
+    onclone: (doc) => {
+      doc.querySelector('.top-bar').style.display = 'none';
+    }
+  }).then(canvas => {
+    topBar.style.position = 'sticky';
+    const a = document.createElement('a');
+    a.download = filename;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  });
+}
+
+// ── 초기화 ──
+buildControls('g1', 'graphControls1');
+buildControls('g2', 'graphControls2');
+drawGraph('graph1', graphData.g1.inc, graphData.g1.con);
+drawGraph('graph2', graphData.g2.inc, graphData.g2.con);
+
+// ── 개별학습 슬라이더 초기 연동 ──
+[0,1,2,3].forEach(i => {
+  document.getElementById('si'+i).addEventListener('input', syncGraphFromSliders);
+  document.getElementById('sc'+i).addEventListener('input', syncGraphFromSliders);
+});
+</script>
+</body>
+</html>
